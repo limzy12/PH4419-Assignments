@@ -91,17 +91,63 @@ def plotBZ():
     z = linspace(zMin, zMax, numPts)
     BZ = zeros(len(z))
 
+    # Calculation of B_z values
     for i in range(len(z)):
         r = [x, y, z[i]]
         B = Coil_Bfield(r, I, R)
         BZ[i] = B[2]
-    
+
+    # Plotting the graph
     plt.figure(1)
     plt.plot(z, BZ)
+
+    # Plot titles and labels
     title = "Plot of $B_z$ vs $z$ at x = " + str(x) + " and y = " + str(y) 
     plt.title(title)
     plt.xlabel("$z$")
     plt.ylabel("$B_z$")
     plt.show()
 
+def Helmholtz_Bfield(z, current, radius, distance):
+    # to vary rho, it suffices to vary x since the result has no explicit phi dependence.
+    # Defining the parameters of the plot
+    xMin = -2. * radius
+    xMax =  2. * radius
+    numPts = 100
+
+    # Setting up the plot values
+    x = linspace(xMin, xMax, numPts)
+    BZ = zeros(len(x))
+
+    # Calculation of B_z values
+    # We calculate the B_z contribution by each loop individually, making appropriate coordinate transforms to center the loop at the origin.
+    for i in range(len(x)):
+        r1 = [x[i], 0., z + distance / 2] 
+        r2 = [x[i], 0., z - distance / 2]
+        B = Coil_Bfield(r1, current, radius) + Coil_Bfield(r2, current, radius)
+        BZ[i] = B[2]
+
+    # Setting up the plot
+    plt.figure(2)
+    plt.plot(x, BZ)
+
+    # Plot titles and labels
+    title = r"Plot of $B_z$ vs $\rho$ at $R$ = " + str(radius) + " and $L$ = " + str(distance)
+    plt.title(title)
+    plt.xlabel(r"$\rho$")
+    plt.ylabel("$B_z$")
+    plt.show()
+
 plotBZ()
+Helmholtz_Bfield(0., 1., 1., 1.,)
+Helmholtz_Bfield(0.2, 1., 1., 1.,)
+
+"""
+Discussion on the behaviour of the magnetic field.
+
+Making the relevant plots, we see that for z = 0, when R = L, there is a region where B_z is constant. This region is bounded by the radius of the loop itself. i.e. rho < R. 
+
+When R > L, we observe an 'M'-shaped curve, where there are two peaks. The peaks occur where rho = R and in between the peaks there is a local minimum at rho = 0. On the other hand when R < L, There is only one global maximum of B_z occurring at rho = 0. 
+
+When z != 0, in general, the maxm
+"""
