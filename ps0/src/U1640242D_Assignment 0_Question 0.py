@@ -140,7 +140,6 @@ def Helmholtz_Bfield(z, current, radius, distance):
 
 plotBZ()
 Helmholtz_Bfield(0., 1., 1., 1.,)
-Helmholtz_Bfield(0.2, 1., 1., 1.,)
 
 """
 Discussion on the behaviour of the magnetic field.
@@ -149,5 +148,5 @@ Making the relevant plots, we see that for z = 0, when R = L, there is a region 
 
 When R > L, we observe an 'M'-shaped curve, where there are two peaks. The peaks occur where rho = R and in between the peaks there is a local minimum at rho = 0. On the other hand when R < L, There is only one global maximum of B_z occurring at rho = 0. 
 
-When z != 0, in general, the maxm
+When z != 0, in general, the maximal value of B_z decreases. In the R > L case, the difference in the maxima and the local minima is decreased.
 """
