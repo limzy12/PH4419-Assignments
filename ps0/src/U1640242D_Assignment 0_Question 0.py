@@ -74,9 +74,34 @@ def Coil_Bfield(r, current, radius):
     # Converting the result into Cartesian co-ordinates
     resultVec = [BRho, 0., BZ]
     resultCart = cyl2cart(resultVec)
-    #print('Result obtained!\n')
 
     return resultCart
 
-result = Coil_Bfield([0., 0., 0.], 1., 1.)
-print(result)
+def plotBZ():
+    # Defining the parameters of the plot
+    zMin = -5.
+    zMax = 5.
+    numPts = 100
+    I = 1.
+    R = 1.
+    x = 0.
+    y = 0.
+
+    # Setting up the plot values
+    z = linspace(zMin, zMax, numPts)
+    BZ = zeros(len(z))
+
+    for i in range(len(z)):
+        r = [x, y, z[i]]
+        B = Coil_Bfield(r, I, R)
+        BZ[i] = B[2]
+    
+    plt.figure(1)
+    plt.plot(z, BZ)
+    title = "Plot of $B_z$ vs $z$ at x = " + str(x) + " and y = " + str(y) 
+    plt.title(title)
+    plt.xlabel("$z$")
+    plt.ylabel("$B_z$")
+    plt.show()
+
+plotBZ()
