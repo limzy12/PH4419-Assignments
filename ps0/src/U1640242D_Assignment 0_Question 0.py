@@ -10,18 +10,7 @@ def cart2cyl(r): # The input argument is a 3D vector r in Cartesian coordinates
     y = r[1]
     z = r[2]
     rho = sqrt(x**2 + y**2)
-    if x == 0 and y == 0:
-        phi = 0.
-    elif x == 0 and y > 0:
-        phi = math.pi / 2
-    elif x == 0 and y < 0:
-        phi = - math.pi / 2
-    elif x > 0 and y == 0:
-        phi = 0.
-    elif x < 0 and y == 0:
-        phi = math.pi
-    else:
-        phi = arctan(y / x)
+    phi = arctan2(y, x)
 
     return [rho, phi, z]
 
@@ -138,8 +127,8 @@ def Helmholtz_Bfield(z, current, radius, distance):
     plt.ylabel("$B_z$")
     plt.show()
 
-plotBZ()
-Helmholtz_Bfield(0., 1., 1., 1.,)
+# plotBZ()
+# Helmholtz_Bfield(0., 1., 1., 1.,)
 
 """
 Discussion on the behaviour of the magnetic field.
