@@ -39,7 +39,7 @@ def calcField(r, Q, X, Y):
     assert shape(X) == shape(Y)
 
     # Calculating required coefficients
-    distSq = (X - rx) ** 2 + (Y - ry) ** 2
+    distSq = hypot((X - rx), (Y - ry)) ** 2
     coeff = 1 / (4 * pi) # Since we take permittivity = 1
 
     # Setting up result matrices
@@ -47,12 +47,17 @@ def calcField(r, Q, X, Y):
     EX = EY = zeros(shape(X)) # x- , y-components of E-field
 
     # Calculate E-field
-    E = coeff * Q * distSq
+    E = coeff * Q / distSq
     
     # Calculate components
-    EX = E * cos(arctan((Y - ry) / (X - rx)))
-    EY = E * sin(arctan((Y - ry) / (X - rx)))
-    
+    EX = E * cos(arctan2(Y - ry, X - rx))
+    EY = E * sin(arctan2(Y - ry, X - rx))
+
+    # Normalise the arrows
+    scale = hypot(EX, EY)
+    EX = 3 * EX / scale
+    EY = 3 * EY / scale
+
     return [EX, EY]
 
 ### Define a function to draw the required plots for part a)
@@ -62,10 +67,10 @@ def plotEquipotentialAndField():
 
     xMin = yMin = -2.
     xMax = yMax = 2.
-    numPtsXpotential = 30
-    numPtsYpotential = 30
-    numPtsXfield = 30
-    numPtsYfield = 30
+    numPtsXpotential = 1000
+    numPtsYpotential = 1000
+    numPtsXfield = 40
+    numPtsYfield = 40
 
     x1 = linspace(xMin, xMax, numPtsXpotential)
     y1 = linspace(yMin, yMax, numPtsYpotential)
@@ -76,16 +81,18 @@ def plotEquipotentialAndField():
     X2, Y2 = meshgrid(x2, y2)
 
     V = zeros(shape(X1))
-    EX = EY = Efield = zeros(shape(X2))
+    EX = zeros(shape(X2))
+    EY = zeros(shape(X2))
+    Efield = zeros(shape(X2)) 
 
     for i in range(len(r)):
-        V += calcPotential(r[i], q, X1, Y1)
+        V = V + calcPotential(r[i], q, X1, Y1)
         Efield = calcField(r[i], q, X2, Y2)
         EX += Efield[0]
         EY += Efield[1]
     
     plt.figure(1)
-    plt.contour(X1, Y1, V, 20)
+    plt.contour(X1, Y1, V)
     plt.quiver(X2, Y2, EX, EY)
     plt.show()
 

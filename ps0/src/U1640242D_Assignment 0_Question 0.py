@@ -127,8 +127,8 @@ def Helmholtz_Bfield(z, current, radius, distance):
     plt.ylabel("$B_z$")
     plt.show()
 
-# plotBZ()
-# Helmholtz_Bfield(0., 1., 1., 1.,)
+plotBZ()
+Helmholtz_Bfield(0., 1., 1., 1.,)
 
 """
 Discussion on the behaviour of the magnetic field.
