@@ -61,7 +61,7 @@ def Coil_Bfield(r, current, radius):
     BZ = coeff * integralZ[0]
 
     # Converting the result into Cartesian co-ordinates
-    resultVec = [BRho, 0., BZ]
+    resultVec = [BRho, 0., BZ]      ### TODO: angular coordinate?
     resultCart = cyl2cart(resultVec)
 
     return resultCart
@@ -126,6 +126,8 @@ def Helmholtz_Bfield(z, current, radius, distance):
     plt.xlabel(r"$\rho$")
     plt.ylabel("$B_z$")
     plt.show()
+
+Coil_Bfield([1., 1., 1.], 1., .5)
 
 plotBZ()
 Helmholtz_Bfield(0., 1., 1., 1.,)

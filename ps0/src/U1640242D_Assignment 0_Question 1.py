@@ -1,6 +1,9 @@
 from scipy import *
 import matplotlib.pyplot as plt
 
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+
 ### Define a function to calculate the potential due to a single point charge
 def calcPotential(r, Q, X, Y):
     # r = position vector of the point charge
@@ -27,7 +30,7 @@ def calcPotential(r, Q, X, Y):
     return V
 
 ### Define a function to calculate the field components due to a single point charge
-def calcField(r, Q, X, Y): 
+def calcField(r, Q, X, Y):  ### TODO: Implement with gradient function. 
     # r = position vector of the point charge
     # Q = charge magnitude of the point charge
     # X, Y = meshgrid coordinates
@@ -67,10 +70,10 @@ def plotEquipotentialAndField():
 
     xMin = yMin = -2.
     xMax = yMax = 2.
-    numPtsXpotential = 1000
-    numPtsYpotential = 1000
-    numPtsXfield = 40
-    numPtsYfield = 40
+    numPtsXpotential = 50
+    numPtsYpotential = 50
+    numPtsXfield = 30
+    numPtsYfield = 30
 
     x1 = linspace(xMin, xMax, numPtsXpotential)
     y1 = linspace(yMin, yMax, numPtsYpotential)
@@ -92,9 +95,35 @@ def plotEquipotentialAndField():
         EY += Efield[1]
     
     plt.figure(1)
-    plt.contour(X1, Y1, V)
+    plt.contour(X1, Y1, V, 100)
     plt.quiver(X2, Y2, EX, EY)
     plt.show()
 
+### Define a function to draw the desired plot for part b)
+def plotPotential():
+    r = [[-1., -1.], [1., 1.]]
+    q = 1
+
+    xMin = yMin = -2.
+    xMax = yMax = 2.
+    numPtsXpotential = 50
+    numPtsYpotential = 50
+
+    x = linspace(xMin, xMax, numPtsXpotential)
+    y = linspace(yMin, yMax, numPtsYpotential)
+
+    X, Y = meshgrid(x, y)
+
+    V = zeros(shape(X)) 
+
+    for i in range(len(r)):
+        V += calcPotential(r[i], q, X, Y)
+
+    plt.figure(2)
+    ax = plt.gca(projection = "3d")
+    ax.plot_surface(X, Y, V, cmap = cm.coolwarm, linewidth = 1)
+    plt.show()
+    print(V)
+
 plotEquipotentialAndField()
-    
+plotPotential()
