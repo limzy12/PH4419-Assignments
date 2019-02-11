@@ -64,7 +64,7 @@ def Coil_Bfield(r, current, radius):
     resultVec = [BRho, phi, BZ]
     resultCart = cyl2cart(resultVec)
 
-    return resultCart
+    return array(resultCart)
 
 def plotBZ():
     # Defining the parameters of the plot
@@ -128,7 +128,7 @@ def Helmholtz_Bfield(z, current, radius, distance):
     plt.show()
 
 plotBZ()
-Helmholtz_Bfield(0., 1., 0.5, 1.)
+Helmholtz_Bfield(0., 1., 0.3, 1.)
 
 """
 Discussion on the behaviour of the magnetic field.
