@@ -1,6 +1,7 @@
 from scipy import *
 import matplotlib.pyplot as plt
 
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
@@ -29,99 +30,76 @@ def calcPotential(r, Q, X, Y):
 
     return V
 
-### Define a function to calculate the field components due to a single point charge
-def calcField(r, Q, X, Y):  ### TODO: Implement with gradient function. 
-    # r = position vector of the point charge
-    # Q = charge magnitude of the point charge
-    # X, Y = meshgrid coordinates
-    rx = r[0]
-    ry = r[1]
-
-    # Sanity checks to prevent errors
-    assert X.ndim == Y.ndim == 2
-    assert shape(X) == shape(Y)
-
-    # Calculating required coefficients
-    distSq = hypot((X - rx), (Y - ry)) ** 2
-    coeff = 1 / (4 * pi) # Since we take permittivity = 1
-
-    # Setting up result matrices
-    E = zeros(shape(X)) # Magnitude of E-field
-    EX = EY = zeros(shape(X)) # x- , y-components of E-field
-
-    # Calculate E-field
-    E = coeff * Q / distSq
-    
-    # Calculate components
-    EX = E * cos(arctan2(Y - ry, X - rx))
-    EY = E * sin(arctan2(Y - ry, X - rx))
-
-    # Normalise the arrows
-    scale = hypot(EX, EY)
-    EX = 3 * EX / scale
-    EY = 3 * EY / scale
-
-    return [EX, EY]
-
 ### Define a function to draw the required plots for part a)
 def plotEquipotentialAndField():
-    r = [[-1., -1.], [1., 1.]]
-    q = 1
+    ## Define parameters for the charges
+    r = [[-1., -1.], [1., 1.]]  # Positions of the charges
+    q = 1                       # Strength of the charges
 
+    ## Define plot parameters
     xMin = yMin = -2.
     xMax = yMax = 2.
-    numPtsXpotential = 50
-    numPtsYpotential = 50
-    numPtsXfield = 30
-    numPtsYfield = 30
+    numPtsX = 50
+    numPtsY = 50
 
-    x1 = linspace(xMin, xMax, numPtsXpotential)
-    y1 = linspace(yMin, yMax, numPtsYpotential)
-    x2 = linspace(xMin, xMax, numPtsXfield)
-    y2 = linspace(yMin, yMax, numPtsYfield)
+    ## Seting up the meshgrid for plotting
+    x = linspace(xMin, xMax, numPtsX)
+    y = linspace(yMin, yMax, numPtsY)
+    X, Y = meshgrid(x, y)
 
-    X1, Y1 = meshgrid(x1, y1)
-    X2, Y2 = meshgrid(x2, y2)
+    ## Define some variables to store results
+    V = zeros(shape(X))
+    EX = zeros(shape(X))
+    EY = zeros(shape(X))
 
-    V = zeros(shape(X1))
-    EX = zeros(shape(X2))
-    EY = zeros(shape(X2))
-    Efield = zeros(shape(X2)) 
-
+    ## Calculating the potential
     for i in range(len(r)):
-        V = V + calcPotential(r[i], q, X1, Y1)
-        Efield = calcField(r[i], q, X2, Y2)
-        EX += Efield[0]
-        EY += Efield[1]
-    
+        V +=  calcPotential(r[i], q, X, Y)
+
+    ## Calculating the Electric field
+    Efield = np.gradient(V)
+    norm = hypot(Efield[0], Efield[1])
+    EY = -1 * Efield[0] / norm
+    EX = -1 * Efield[1] / norm
+
+    ## Setting up the plot
     plt.figure(1)
-    plt.contour(X1, Y1, V, 100)
-    plt.quiver(X2, Y2, EX, EY)
+    plt.contour(X, Y, V, 100)
+    plt.quiver(X, Y, EX, EY)
+    plt.title("Quiver plot of the electric field and contour plot of equipotential lines")
     plt.show()
 
 ### Define a function to draw the desired plot for part b)
 def plotPotential():
-    r = [[-1., -1.], [1., 1.]]
-    q = 1
-
+    ## Define parameters for the charges
+    r = [[-1., -1.], [1., 1.]]  # Positions of the charges
+    q = 1                       # Strength of the charges
+    
+    ## Define plot parameters
     xMin = yMin = -2.
     xMax = yMax = 2.
     numPtsXpotential = 50
     numPtsYpotential = 50
 
+    ## Define some variables to store results
     x = linspace(xMin, xMax, numPtsXpotential)
     y = linspace(yMin, yMax, numPtsYpotential)
-
     X, Y = meshgrid(x, y)
 
+    ## Define a variable to store results
     V = zeros(shape(X)) 
 
+    ## Calculating the potential
     for i in range(len(r)):
         V += calcPotential(r[i], q, X, Y)
 
+    ## Setting up the plot
     plt.figure(2)
     ax = plt.gca(projection = "3d")
     ax.plot_surface(X, Y, V, cmap = cm.coolwarm, linewidth = 1)
+
+    ## Plot title
+    plt.title("Surface plot of potential")
     plt.show()
     print(V)
 
