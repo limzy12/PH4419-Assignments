@@ -28,7 +28,7 @@ def calcPotential(r, Q, X, Y):
     # Calculating the potential
     V = coeff * Q / dist
 
-    return V
+    return array(V)
 
 ### Define a function to draw the required plots for part a)
 def plotEquipotentialAndField():
@@ -101,7 +101,6 @@ def plotPotential():
     ## Plot title
     plt.title("Surface plot of potential")
     plt.show()
-    print(V)
 
 plotEquipotentialAndField()
 plotPotential()
