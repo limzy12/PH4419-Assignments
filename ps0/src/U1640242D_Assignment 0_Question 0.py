@@ -61,7 +61,7 @@ def Coil_Bfield(r, current, radius):
     BZ = coeff * integralZ[0]
 
     # Converting the result into Cartesian co-ordinates
-    resultVec = [BRho, phi, BZ]      ### TODO: angular coordinate?
+    resultVec = [BRho, phi, BZ]
     resultCart = cyl2cart(resultVec)
 
     return resultCart
@@ -111,8 +111,8 @@ def Helmholtz_Bfield(z, current, radius, distance):
     # Calculation of B_z values
     # We calculate the B_z contribution by each loop individually, making appropriate coordinate transforms to center the loop at the origin.
     for i in range(len(x)):
-        r1 = [x[i], 0., z + distance / 2] 
-        r2 = [x[i], 0., z - distance / 2]
+        r1 = [x[i], 0., z + (distance / 2)] 
+        r2 = [x[i], 0., z - (distance / 2)]
         B = Coil_Bfield(r1, current, radius) + Coil_Bfield(r2, current, radius)
         BZ[i] = B[2]
 
@@ -127,10 +127,8 @@ def Helmholtz_Bfield(z, current, radius, distance):
     plt.ylabel("$B_z$")
     plt.show()
 
-print(Coil_Bfield([1., 1., 1.], 1., .5))
-
 plotBZ()
-Helmholtz_Bfield(0., 1., 1., 1.,)
+Helmholtz_Bfield(0., 1., 0.5, 1.)
 
 """
 Discussion on the behaviour of the magnetic field.
