@@ -46,15 +46,12 @@ def oscillator_plot(t, m, k, D, u0):
     plt.figure(1)
     plt.plot(trajectoryX, trajectoryV)
     plt.quiver(X, V, dX, dV)
+    plt.xlabel(r'Position, $x(t)$')
+    plt.ylabel(r'Velocity, $v(t)$')
+    plt.title(r'Phase portrait and trajectory of $m\ddot{x} + D\dot{x} + kx = 0$;' + '\n m = ' + str(m) + ', D = ' + str(D) + ', k = '+ str(k) + r', $u_0$ = ' + str(u0))
     plt.show()
 
 u0 = [0., pi/2]
 t = linspace(0., 10., 1000)
 oscillator_plot(t, 1., 1., 0., u0)
-
-
-
-
-
-
 
