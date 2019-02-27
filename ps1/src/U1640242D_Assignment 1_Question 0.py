@@ -72,8 +72,10 @@ def doubleWell(u, t, m):
 
 ### Function to plot the required plots
 def double_potential_plot(m = 1): 
-    xmax = 5
-    vmax = 5
+
+    ### Setting up variables for phase portrait plot
+    xmax = 2
+    vmax = 2
     numPts = 40
     x = linspace(-xmax, xmax, numPts)
     v = linspace(-vmax, vmax, numPts)
@@ -94,9 +96,36 @@ def double_potential_plot(m = 1):
     dX = dX / norm
     dV = dV / norm
 
+    ### Calculate three closed trajectories
+    ## Setting up the integration interval
+    tmax = 10.
+    numTPts = 1000
+    t = linspace(0, tmax, numTPts)
+
+    ## Defining initial points for the three trajectories
+    u1 = [0, 0.25 * xmax]
+    u2 = [0, 0.5 * xmax]
+    u3 = [0, 0.75 * xmax]
+    traj1 = integrate.odeint(doubleWell, u1, t, (m,))
+    traj2 = integrate.odeint(doubleWell, u2, t, (m,))
+    traj3 = integrate.odeint(doubleWell, u3, t, (m,))
+
     ## Plotting phase portrait and trajectory
     plt.figure(2)
+    plt.plot(traj1[:,0], traj1[:,1])
+    plt.plot(traj2[:,0], traj2[:,1])
+    plt.plot(traj3[:,0], traj3[:,1])
     plt.quiver(X, V, dX, dV)
+    plt.xlabel(r'Position, $x(t)$')
+    plt.ylabel(r'Velocity, $v(t)$')
+    plt.ylim([-1.25 * vmax, 1.25 * vmax])
+    plt.title(r'Phase portrait of double potential well with $m = $' + str(m) + '\n and three closed trajectories')
+    plt.legend(['Trajectory of initial point ' + str(u1), 'Trajectory of initial point ' + str(u2), 'Trajectory of initial point ' + str(u3)], loc = 1)
     plt.show()
 
 double_potential_plot()
+
+### How do the different initial conditions affect the harmonic motion of the particle?
+'''
+With different initial conditions, the particle starts out with different amounts of energy. This energy is conserved throughout the harmonic motion since there are no dissipative forces. The higher the initial energy of the particle, the less it is affected by the step in the potential. This is observed in the phase portrait as a more regular, oblong trajectory. Conversely, particles with less initial energy are more sensitive to the step in the potential. This results in the figure 8 trajectory as seen in the phase portrait. 
+'''
