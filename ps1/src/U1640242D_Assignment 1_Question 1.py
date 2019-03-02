@@ -61,28 +61,34 @@ def potentialWell(x, V0 = 50.):
     else:
         return V0
 
+### Define the perturbation integrand
 def integrand(x, m, n):
     psi_m = sqrt(2 / b) * sin(m * pi * x / b) ## No need for complex conjugate since it is a real value
     psi_n = sqrt(2 / b) * sin(n * pi * x / b) 
     return psi_m * potentialWell(x) * psi_n
 
-def potential(m, n):
+### Define a function to calculate the potential matrix element V_mn
+def Potential(m, n):
     V_mn = integrate.quad(integrand, 0, b, (m, n))
     return V_mn[0]
 
+### Define a function to return the k smallest eigenvalues
 def eigenvalue_solver(A, N, k):
-    eigvals = la.eigvalsh(A)
+    eigvals = la.eigvalsh(A) ## Use eigvalsh since the matrix will be an observable which is Hermitian
     eigvals.sort()
     return eigvals[0:k]
 
+# Set up the Hamilitonian matrix
 N = array(range(1,50))
 E_n = (N ** 2) * (pi ** 2) / (2 * (b ** 2))
 A = diag(E_n, 0)
-
-x = linspace(0, b, 1000)
-
 for i in range(len(N)): 
     for j in range(len(N)):
-        A[i,j] += potential(i+1,j+1)
+        A[i,j] += Potential(i+1,j+1)
 
+# Print the first 4 eigenvalues
 print(eigenvalue_solver(A, len(N), 4))
+
+'''
+To improve the accuracy of the numerical eigenvalues, we can consider expanding the size of the Hamilitonian matrix. 
+'''
