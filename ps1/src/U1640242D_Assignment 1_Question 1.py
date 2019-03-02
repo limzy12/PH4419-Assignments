@@ -4,6 +4,7 @@ from scipy import *
 import matplotlib.pyplot as plt
 
 import scipy.integrate as integrate
+import scipy.linalg as la
 
 ##############
 ## Part (a) ##
@@ -44,4 +45,44 @@ FPW_demo([0.001, 0.001], 50., x, [60.]) ## epsilon > 50
 '''
 When epsilon > 50, the finite potential well cannot contain the particle as the particle is more energetic than the well depth. This results in a free state that does not decay as x tends to +/- infinity. 
 '''
-        
+
+##############
+## Part (b) ##
+##############
+a = 1.
+b = 4.
+
+### Define the potential function
+def potentialWell(x, V0 = 50.):
+    if abs(x - b / 2) <= a / 2:
+        return 0
+    elif x < 0 or x > b:
+        return inf
+    else:
+        return V0
+
+def integrand(x, m, n):
+    psi_m = sqrt(2 / b) * sin(m * pi * x / b) ## No need for complex conjugate since it is a real value
+    psi_n = sqrt(2 / b) * sin(n * pi * x / b) 
+    return psi_m * potentialWell(x) * psi_n
+
+def potential(m, n):
+    V_mn = integrate.quad(integrand, 0, b, (m, n))
+    return V_mn[0]
+
+def eigenvalue_solver(A, N, k):
+    eigvals = la.eigvalsh(A)
+    eigvals.sort()
+    return eigvals[0:k]
+
+N = array(range(1,50))
+E_n = (N ** 2) * (pi ** 2) / (2 * (b ** 2))
+A = diag(E_n, 0)
+
+x = linspace(0, b, 1000)
+
+for i in range(len(N)): 
+    for j in range(len(N)):
+        A[i,j] += potential(i+1,j+1)
+
+print(eigenvalue_solver(A, len(N), 4))
