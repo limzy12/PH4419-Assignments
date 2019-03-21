@@ -53,8 +53,8 @@ def laplace_solver(epsilon = 1.e-3, nmax = 1.e4, u_flow = 5.):
     plt.colorbar().set_label('Velocity of fluid')
     plt.xlim(0, Lx)
     plt.ylim(0, Ly)
-    plt.axvline(0.6, 0, 0.4)
-    plt.axhline(0.4, 0.6, 1)
+    plt.vlines(0.6 * Lx, 0, 0.4 * Ly)
+    plt.hlines(0.4 * Ly, 0.6 * Lx, Lx)
     plt.show()
 
 laplace_solver()
