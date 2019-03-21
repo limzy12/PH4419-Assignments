@@ -16,8 +16,8 @@ def set_boundaries(psi, xsteps, ysteps, Lx, Ly, xCutoff, yCutoff, u_flow):
 
 def laplace_solver(epsilon = 1.e-3, nmax = 1.e4, u_flow = 5.):
     ## Setting up some other required constants
-    xsteps = 100
-    ysteps = 100
+    xsteps = 150
+    ysteps = 150
     Lx = 1.
     Ly = 1.
     xCutoff = int(0.6 * xsteps) - 1
@@ -58,3 +58,7 @@ def laplace_solver(epsilon = 1.e-3, nmax = 1.e4, u_flow = 5.):
     plt.show()
 
 laplace_solver()
+
+'''
+In order to make less iterations, we could increase number of steps. i.e. smaller but more finite elements. However, this should come with a corresponding decrease in epsilon to ensure that enough iterations have been run to properly evaluate all points in the domain. It should be noted that although we take less iterations, each iteration may take a longer time to run. 
+'''
