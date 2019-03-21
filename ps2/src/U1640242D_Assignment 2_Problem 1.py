@@ -40,7 +40,7 @@ ax3 = fig.add_subplot(1,3,3)
 bandgap_plot(ax1, V_2 = 0.)
 ax1.set_xlabel(r'$k$ / ($\frac{\pi}{a}$)') 
 ax1.set_ylabel(r'Energy (eV)')
-ax1.set_title(r'$V_1 = 0.2 eV$')
+ax1.set_title(r'$V_1 = 0.2 eV, V_2 = 0.0 eV$')
 
 bandgap_plot(ax2)    
 ax2.set_xlabel(r'$k$ / ($\frac{\pi}{a}$)') 
@@ -53,4 +53,24 @@ ax3.set_ylabel(r'Energy (eV)')
 ax3.set_title(r'$V_1 = 4.0 eV, V_2 = 0.0 eV$')
 
 fig.tight_layout()
+
+
+######################
+#      Part (b)      # 
+######################
+
+def E_k(kx, ky, gamma, a = 1.42e-10):
+    E1 = 4 * cos(sqrt(3) * a * ky / 2)
+    E2 = cos(3 * a * kx / 2) * cos(sqrt(3) * a * ky / 2)
+    return gamma * sqrt(1 + E1 * E2) 
+
+def graphene_plot(gamma = 3.0, a):
+    steps = 1000
+    kx = linspace(0, pi / a, steps)
+    energy = E_k(kx, 0., gamma)
+    plt.figure(2)
+    plt.plot(kx, energy)
+
+graphene_plot(a = 1.42e-10)
+
 plt.show()
