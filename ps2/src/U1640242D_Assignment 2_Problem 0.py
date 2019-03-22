@@ -5,9 +5,17 @@ import numpy as np
 
 ## We define a function to set the required boundary conditions
 def set_boundaries(psi, xsteps, ysteps, Lx, Ly, xCutoff, yCutoff, u_flow):
+
+    # Top boundary
     psi[-1, :] = u_flow * Ly
+
+    # Bottom boundary
     psi[0, :] = 0
+
+    # Cutout in corner
     psi[0:yCutoff, xCutoff:] = 0
+
+    # Left and right boundaries (linear)
     for i in range(ysteps):
         psi[i, 0] = i * (u_flow * Ly) / (ysteps - 1)
         if i > yCutoff: 
