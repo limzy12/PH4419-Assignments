@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+## We define a function to set the required boundary conditions
 def set_boundaries(psi, xsteps, ysteps, Lx, Ly, xCutoff, yCutoff, u_flow):
     psi[-1, :] = u_flow * Ly
     psi[0, :] = 0
@@ -14,6 +15,7 @@ def set_boundaries(psi, xsteps, ysteps, Lx, Ly, xCutoff, yCutoff, u_flow):
             psi[i, -1] = idx * (u_flow * Ly) / (ysteps - yCutoff - 1)
     return psi
 
+## We define a function to solve the Laplace equation
 def laplace_solver(epsilon = 1.e-3, nmax = 1.e4, u_flow = 5.):
     ## Setting up some other required constants
     xsteps = 150
@@ -27,24 +29,31 @@ def laplace_solver(epsilon = 1.e-3, nmax = 1.e4, u_flow = 5.):
 
     ## Initialise the matrix
     psi = zeros((ysteps, xsteps)) ## row index -> y; column index -> x; 
-    next_psi = zeros((ysteps, xsteps))
+    next_psi = zeros((ysteps, xsteps)) 
+    # Set the boundary conditions
     set_boundaries(psi, xsteps, ysteps, Lx, Ly, xCutoff, yCutoff, u_flow)
 
     while (error > epsilon) and (itercount < nmax):
+        # Compute the values at the next time step
         next_psi[1:-1, 1:-1] = 0.25 * (psi[1:-1, 2:] + psi[1:-1, :-2] + psi[2:,1:-1] + psi[:-2, 1:-1])
-        error = abs(mean(next_psi[1:-1, 1:-1] - psi[1:-1, 1:-1]))
+        # Calculate the error
+        error = abs(mean(next_psi[1:-1, 1:-1] - psi[1:-1, 1:-1]))   
 
+        # Count the iterations
         itercount += 1
         psi = copy(next_psi)
+        # Reset boundary conditions
         set_boundaries(psi, xsteps, ysteps, Lx, Ly, xCutoff, yCutoff, u_flow)
         
     print("Number of iterations: " + str(itercount))
     print("Error: " + str(error))
 
+    # Set up plot variables
     X = linspace(0, Lx, xsteps)
     Y = linspace(0, Ly, ysteps)
     streamX, streamY = np.gradient(psi)
 
+    # Plotting of streamlines
     plt.figure(1)
     plt.streamplot(X, Y, streamX, -streamY, 2, color = np.hypot(streamX, streamY), cmap = 'jet')
     plt.xlabel(r'$x$')
