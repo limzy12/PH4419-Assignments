@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy.random as rndm
 import time
 
+## Function to accept or reject transitions based on the Metropolis algorithm 
 def metropolisProb(dE, T):
     if dE < 0:
         return True
@@ -12,21 +13,25 @@ def metropolisProb(dE, T):
     else: 
         return False
 
-def computeTotalEnergy(state, J): ## This only works for systems 3 x 3 or greater
+## Function to compute total energy of the system
+def computeTotalEnergy(state, J): ## This only works for systems 3 x 3 or greater, if not it will be off by a factor of 2
     (Nx, Ny) = state.shape
     totalEnergy = 0
     for i in range(Nx):
         for j in range(Ny):
+            ## It suffices to look at the neighbour below and to the left, and wrap over at the leftmost and bottom-most boundary.
             totalEnergy += (-J * state[i,j] * (state[(i + 1) % Nx, j] + state[i, (j + 1) % Ny]))
     return totalEnergy
 
+## Function to calculate the energy change, given the position to be changed. 
 def energyChange(state, J, i, j):
     (Nx, Ny) = state.shape
     ## By flipping the state, the change in energy is simply the initial energy of the particle with its nearest neighbours multiplied by -2
     energy = -J * state[i,j] * (state[(i + 1) % Nx, j] + state[i, (j + 1) % Ny] + state[(i - 1) % Nx, j] + state[i, (j - 1) % Ny])
-    return -2 * energy
-    
 
+    return -2 * energy
+
+## Monte-Carlo simulation
 def ising_mc(J = 1., Nx = 16, Ny = 16, nsteps = 50000):
     Tmax = max(1/J, 10/J)
     Tmin = min(1/J, 10/J)
@@ -38,10 +43,9 @@ def ising_mc(J = 1., Nx = 16, Ny = 16, nsteps = 50000):
     avgMagPoints = []
     heatCapPoints = []
     magSusPoints = []
-    algoStart = time.time()
 
+    ## Simulation for some particular temperature T
     for temp in T:
-        stepStart = time.time()
         ## Start with uniformly distributed state for (hopefully) quicker convergence
         state = rndm.choice([-1, 1], size = (Nx, Ny))
         totalEnergy = computeTotalEnergy(state, J)
@@ -66,6 +70,7 @@ def ising_mc(J = 1., Nx = 16, Ny = 16, nsteps = 50000):
             magPoints = append(magPoints, array([totalMag]))
 
         ## Calculate plotting values from cutoff timestep (threshold)
+        ## Use the mean and variance functions to calculate the relevant values
         avgE = mean(energyPoints[threshold:])
         avgM = mean(magPoints[threshold:])
         heatCap = var(energyPoints[threshold:]) / temp
@@ -75,13 +80,8 @@ def ising_mc(J = 1., Nx = 16, Ny = 16, nsteps = 50000):
         avgMagPoints.append(avgM)
         heatCapPoints.append(heatCap)
         magSusPoints.append(magSus)
-        
-        stepEnd = time.time()
-        print('Step temperature ' + str(temp) + ' runtime = ' + str(stepEnd - stepStart))
 
-    algoEnd = time.time()
-    print('Overall runtime = ' + str(algoEnd - algoStart) + '; Average time per step = ' + str((algoEnd - algoStart) / numTsteps))
-
+    ## Plotting of results
     fig = plt.figure(1) 
     ax1 = fig.add_subplot(2, 2, 1)
     ax2 = fig.add_subplot(2, 2, 2)
@@ -110,4 +110,6 @@ def ising_mc(J = 1., Nx = 16, Ny = 16, nsteps = 50000):
     ax4.legend(loc = 'best')
     plt.show()
 
+
+## Run the simulation 
 ising_mc()
