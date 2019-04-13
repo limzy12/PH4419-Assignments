@@ -68,3 +68,12 @@ plt.xlabel('Time')
 plt.title('Decay of Bismuth-213')
 plt.legend(loc = 'best')
 plt.show()
+
+'''
+The curves of the two species of Bi are as expected. The curve of Pb is small due to its relatively short half-life, leading to quicker decay of the Pb atoms compared to its accumulation from the decay of Bi-213. It is similar for the Tl, but due to the low probability of decay via the Tl route, the curve looks to be relatively flat at around zero.
+
+We have to implement the decay from bottom-up in order to avoid having cases of a 'double decay' in a particular time step. If we proceeded from the top-down, using the approach above, it is fully possible that a Bi-213 might decay into say, a Pb-209, and that Pb-209 then again decays into Bi-209. As such, it would seem as if the particle decayed directly from Bi-213 to Bi-209.
+
+However, I would argue that it is possible to run a correct simulation from top-down, if one assigns the resultant number of particles in each decay into another variable, which is then to be considered for the next time step. i.e. one has to be careful to not allow scenarios of 'double decay'
+
+'''
